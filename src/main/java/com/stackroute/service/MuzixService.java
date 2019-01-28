@@ -9,7 +9,7 @@ import java.util.List;
 public interface MuzixService {
     public Track saveTrack(Track track) throws TrackAlreadyExistsException;
     public List<Track> getAllTracks() ;
-    public void deleteById(String trackId) throws TrackNotFoundException;
+    public List<Track> removeById(int trackId) throws TrackNotFoundException;
     public Track updateTrack(int trackId,String trackComments) throws TrackNotFoundException;
     public List<Track> trackByTrackName(String trackName)throws TrackNotFoundException;
     public Track trackByTrackId(int trackId)throws TrackNotFoundException;

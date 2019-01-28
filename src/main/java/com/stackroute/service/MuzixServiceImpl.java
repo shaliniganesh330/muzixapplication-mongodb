@@ -41,19 +41,19 @@ public class MuzixServiceImpl implements MuzixService {
 
     //Overrided method for deleteById//
     @Override
-    public void deleteById(String trackId) throws TrackNotFoundException {
-        int temp = new Integer(trackId);
-        if (!muzixRepository.existsById(temp)) {
+    public List<Track> removeById(int trackId) throws TrackNotFoundException {
+        if (!muzixRepository.existsById(trackId)) {
             throw new TrackNotFoundException("Track not found");
         }
-        muzixRepository.deleteById(temp);
+        muzixRepository.deleteById(trackId);
+        return muzixRepository.findAll();
     }
 
     //Overrided method for updateTrack //
     @Override
     public Track updateTrack(int trackId, String comment) throws TrackNotFoundException {
 
-        if (muzixRepository.findById(trackId).isEmpty()) {
+        if (!muzixRepository.existsById(trackId)) {
             throw new TrackNotFoundException("Track not found to update");
         }
         Optional<Track> muzix = muzixRepository.findById(trackId);
@@ -66,7 +66,7 @@ public class MuzixServiceImpl implements MuzixService {
     //Overrided method for findByTrackId//
     @Override
     public Track trackByTrackId(int trackId) throws TrackNotFoundException {
-        if (muzixRepository.findById(trackId).isEmpty()) {
+        if (!muzixRepository.existsById(trackId)) {
             throw new TrackNotFoundException("Track not found to update");
         }
         Optional<Track> muzix1 = muzixRepository.findById(trackId);
@@ -81,6 +81,4 @@ public class MuzixServiceImpl implements MuzixService {
         }
         return muzixRepository.findByTrackName(trackName);
     }
-
-
 }

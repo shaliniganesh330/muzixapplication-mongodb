@@ -46,10 +46,10 @@ public class MuzixController {
 
     //Removing track.//
     @DeleteMapping("track/{trackId}")
-    public ResponseEntity<?> deleteById(@PathVariable String trackId) {
+    public ResponseEntity<?> deleteById(@PathVariable int trackId) {
         ResponseEntity responseEntity;
         try {
-            muzixService.deleteById(trackId);
+            muzixService.removeById(trackId);
             responseEntity = new ResponseEntity<List<Track>>(muzixService.getAllTracks(), HttpStatus.FOUND);
         } catch (Exception ex) {
             responseEntity = new ResponseEntity<String>(ex.getMessage(), HttpStatus.NOT_FOUND);
@@ -73,7 +73,7 @@ public class MuzixController {
     //Method to track by id//
     @GetMapping("track/{trackId}")
     public ResponseEntity<?> getById(@PathVariable int trackId) throws TrackNotFoundException {
-        return new ResponseEntity (muzixService.trackByTrackId(trackId), HttpStatus.OK);
+        return new ResponseEntity (muzixService.trackByTrackId(trackId), HttpStatus.FOUND);
     }
 
     //Method to track by name//
