@@ -73,13 +73,25 @@ public class MuzixController {
     //Method to track by id//
     @GetMapping("track/{trackId}")
     public ResponseEntity<?> getById(@PathVariable int trackId) throws TrackNotFoundException {
-        return new ResponseEntity (muzixService.trackByTrackId(trackId), HttpStatus.FOUND);
+        ResponseEntity responseEntity;
+        try {
+            return new ResponseEntity(muzixService.trackByTrackId(trackId), HttpStatus.FOUND);
+        }catch (Exception ex){
+            responseEntity = new ResponseEntity<String>(ex.getMessage(), HttpStatus.CONFLICT);
+        }
+        return responseEntity;
     }
 
     //Method to track by name//
     @GetMapping("tracks/{trackName}")
     public ResponseEntity<?> getByName(@PathVariable String trackName) throws TrackNotFoundException {
+        ResponseEntity responseEntity;
+        try {
         return new ResponseEntity<List<Track>>(muzixService.trackByTrackName(trackName), HttpStatus.OK);
-    }
+    }catch (Exception ex){
+            responseEntity = new ResponseEntity<String>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        }
+        return responseEntity;
+        }
 }
 

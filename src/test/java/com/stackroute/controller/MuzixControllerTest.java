@@ -3,6 +3,7 @@ package com.stackroute.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stackroute.domain.Track;
 import com.stackroute.exceptions.TrackAlreadyExistsException;
+import com.stackroute.exceptions.TrackNotFoundException;
 import com.stackroute.service.MuzixService;
 import org.junit.Before;
 import org.junit.Test;
@@ -85,6 +86,14 @@ public class MuzixControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isFound())
                 .andDo(MockMvcResultHandlers.print());
     }
+    @Test
+    public void deleteByIdFailure() throws Exception {
+        when(muzixService.removeById(track.getTrackId())).thenThrow(TrackNotFoundException.class);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/track/10")
+                .contentType(MediaType.APPLICATION_JSON).content(asJsonString(track)))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andDo(MockMvcResultHandlers.print());
+    }
 
     @Test
     public void updateTrack() throws Exception {
@@ -97,11 +106,29 @@ public class MuzixControllerTest {
     }
 
     @Test
+    public void updateTrackFailure() throws Exception {
+        when(muzixService.updateTrack(track.getTrackId(),track.getTrackComments())).thenThrow(TrackNotFoundException.class);
+        when(muzixService.saveTrack(any())).thenReturn(track);
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/track/10")
+                .contentType(MediaType.APPLICATION_JSON).content(asJsonString(track)))
+                .andExpect(MockMvcResultMatchers.status().isConflict())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
     public void getById() throws Exception{
         when(muzixService.trackByTrackId(track.getTrackId())).thenReturn(track);
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/track/10")
                 .contentType(MediaType.APPLICATION_JSON).content(asJsonString(track)))
                 .andExpect(MockMvcResultMatchers.status().isFound())
+                .andDo(MockMvcResultHandlers.print());
+    }
+    @Test
+    public void getByIdFailure() throws Exception{
+        when(muzixService.trackByTrackId(track.getTrackId())).thenThrow(TrackNotFoundException.class);
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/track/10")
+                .contentType(MediaType.APPLICATION_JSON).content(asJsonString(track)))
+                .andExpect(MockMvcResultMatchers.status().isConflict())
                 .andDo(MockMvcResultHandlers.print());
     }
 
@@ -111,6 +138,15 @@ public class MuzixControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tracks/Jenny")
                 .contentType(MediaType.APPLICATION_JSON).content(asJsonString(track)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    public void getByNameFailure() throws Exception {
+        when(muzixService.trackByTrackName(track.getTrackName())).thenThrow(TrackNotFoundException.class);
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/tracks/Jenny")
+                .contentType(MediaType.APPLICATION_JSON).content(asJsonString(track)))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andDo(MockMvcResultHandlers.print());
     }
     private static String asJsonString(final Object obj)
