@@ -90,14 +90,27 @@ public class MuzixRepositoryTestIT {
         muzixRepository.delete(u);
         Assert.assertEquals(Optional.empty(),muzixRepository.findById(10));
     }
+    @Test
+    public void testDeleteTrackFailure(){
+        Track  u = new Track(10,"jayanth","moms love");
+        muzixRepository.save(u);
+        muzixRepository.delete(u);
+        Assert.assertNotEquals(u,muzixRepository.findById(10));
+    }
 
-//    @Test
-//    public void testUpdateTrack(){
-//        track.setTrackComments("novel");
-//        muzixRepository.save(track);
-//        Assert.assertEquals("novel",muzixRepository.findById(1).get().getTrackComments());
-//    }
+    @Test
+    public void testUpdateTrackSuccess(){
+        track.setTrackComments("novel");
+        muzixRepository.save(track);
+        Assert.assertEquals("novel",muzixRepository.findById(10).get().getTrackComments());
+    }
 
+    @Test
+    public void testUpdateTrackFailure(){
+        track.setTrackComments("novel");
+        muzixRepository.save(track);
+        Assert.assertNotEquals("novelist",muzixRepository.findById(10).get().getTrackComments());
+    }
     @Test
     public void testFindByTrackIdSuccess(){
         muzixRepository.save(track);

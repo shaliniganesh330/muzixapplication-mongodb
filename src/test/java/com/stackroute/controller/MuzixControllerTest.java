@@ -52,7 +52,7 @@ public class MuzixControllerTest {
         list = new ArrayList();
         list.add(track);
     }
-        @Test
+    @Test
     public void saveTrack() throws Exception{
             when(muzixService.saveTrack(any())).thenReturn(track);
             mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/track")
